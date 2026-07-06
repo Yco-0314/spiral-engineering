@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Yco-0314/spiral-engineering/schema/ledger.schema.json",
+  "title": "Spiral ledger record",
+  "description": "One JSONL line in a spiral ledger. Two files, append-only: changes.jsonl (verified second-order self-changes — the system editing itself) and evals.jsonl (automated measurements that back them). A 'measure-run' summary line may appear in evals.jsonl. The format is the project; tools are replaceable.",
+  "oneOf": [
+    { "$ref": "#/definitions/change" },
+    { "$ref": "#/definitions/eval" },
+    { "$ref": "#/definitions/measureRun" }
+  ],
+  "definitions": {
+    "change": {
+      "type": "object",
+      "description": "One verified self-change (changes.jsonl). Class is declared, but must be backed by the evidence field — an auditor should be able to follow it.",
+      "required": ["kind", "ts", "id", "class", "evidence", "grounding"],
+      "properties": {
+        "kind": { "const": "change" },
+        "ts": { "type": "string", "description": "ISO date or datetime of the verified change" },
+        "id": { "type": "string", "description": "stable slug for the change" },
+        "class": {
+          "enum": ["ship", "gate", "null"],
+          "description": "ship = moved a measured delta>0 (or removed a documented failure mode); gate = structural, verified by review/self-test, no single-shot delta; null = honest closure (revert, convergence, correction). A ledger with zero null lines is not measuring."
+        },
+        "delta": { "type": ["integer", "null"], "description": "measured percentage-point delta for ship changes; never invented for gate/null" },
+        "grounding": { "enum": ["external", "internal"], "description": "external = triggered by a signal from outside the loop (a borrow, a paper, a user correction, a production outcome); internal = self-generated. The Data Processing Inequality caps what a closed loop can learn." },
+        "evidence": { "type": "string", "description": "where the proof lives: an eval record ref, a review verdict, a self-test, a revert commit" },
+        "target": { "type": "string", "description": "what part of the system was changed" },
+        "source": { "type": "string", "description": "the external source, when grounding=external" }
+      }
+    },
+    "eval": {
+      "type": "object",
+      "description": "One automated with-vs-without measurement (evals.jsonl). Delta and difficulty are MODEL-RELATIVE: records never merge across models.",
+      "required": ["kind", "ts", "set", "model", "judgeModel", "n", "cases", "graded", "errors", "baselinePass", "skillPass", "delta", "gate"],
+      "properties": {
+        "kind": { "const": "eval" },
+        "ts": { "type": "string" },
+        "set": { "type": "string", "description": "eval-set name" },
+        "skill": { "type": ["string", "null"], "description": "the intervention under test (path or id); null for baseline-only runs" },
+        "model": { "type": "string", "description": "model under test" },
+        "judgeModel": { "type": "string", "description": "grader model — MUST be stronger than `model`; judge==model fabricates results" },
+        "n": { "type": "integer", "minimum": 1, "description": "runs per case; case verdict is the majority" },
+        "cases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "baseline", "skill"],
+            "properties": {
+              "id": { "type": "string" },
+              "baseline": { "type": ["boolean", "null"], "description": "majority verdict without the intervention; null = all runs errored" },
+              "skill": { "type": ["boolean", "null"], "description": "majority verdict with the intervention" }
+            }
+          }
+        },
+        "graded": { "type": "integer", "description": "cases where both arms produced a verdict" },
+        "errors": { "type": "integer", "description": "cases excluded as errored — recorded, never hidden" },
+        "baselinePass": { "type": "integer" },
+        "skillPass": { "type": "integer" },
+        "delta": { "type": ["integer", "null"], "description": "round((skillPass-baselinePass)/graded*100); null when nothing graded" },
+        "gate": { "enum": ["PASS", "NO MOVEMENT", "ERROR"], "description": "PASS iff skillPass > baselinePass; ERROR recorded honestly when a run dies" },
+        "tokens": {
+          "type": ["object", "null"],
+          "description": "real usage when the API reports it; null when unmeasurable — never an invented constant",
+          "properties": { "input": { "type": "integer" }, "output": { "type": "integer" } }
+        },
+        "dir": { "type": "string", "description": "where per-case transcripts were persisted (diagnosis artifacts)" }
+      }
+    },
+    "measureRun": {
+      "type": "object",
+      "description": "Summary line appended after measuring every set (evals.jsonl).",
+      "required": ["kind", "ts", "rows"],
+      "properties": {
+        "kind": { "const": "measure-run" },
+        "ts": { "type": "string" },
+        "rows": { "type": "array", "items": { "type": "object", "required": ["skill", "delta", "gate"] } },
+        "flagged": { "type": "array", "items": { "type": "string" } },
+        "errored": { "type": "integer" }
+      }
+    }
+  }
+}

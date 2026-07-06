@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Self-tests (model-free)
+        run: |
+          node bin/spiral-pitch.mjs --self-test
+          node bin/dark-room.mjs --self-test
+          node bin/derive-difficulty.mjs --self-test
+
+      - name: Schema is valid JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('schema/ledger.schema.json','utf8'))"
+
+      - name: Example ledgers conform (structural check, line by line)
+        run: |
+          node --input-type=module -e '
+          import { readFileSync } from "node:fs";
+          const req = { change: ["ts","id","class","evidence","grounding"], eval: ["ts","set","model","judgeModel","n","cases","delta","gate"], "measure-run": ["ts","rows"] };
+          let n = 0;
+          for (const f of ["examples/strata/changes.jsonl","examples/strata/evals.jsonl"]) {
+            for (const line of readFileSync(f,"utf8").trim().split("\n")) {
+              const r = JSON.parse(line); n++;
+              const need = req[r.kind];
+              if (!need) { console.error(`${f}: unknown kind ${r.kind}`); process.exit(1); }
+              for (const k of need) if (!(k in r)) { console.error(`${f}: ${r.kind} line missing ${k}`); process.exit(1); }
+            }
+          }
+          console.log(`${n} ledger lines conform`);
+          '
+
+      - name: Instruments replay the exhibit
+        run: |
+          node bin/spiral-pitch.mjs --changes examples/strata/changes.jsonl --evals examples/strata/evals.jsonl | grep -q "Σ +406%" && echo "canonical table reproduced"
+          ! node bin/dark-room.mjs --evals examples/strata/evals.jsonl | grep -q "MEASURED DARK ROOM"
+          echo "no false dark rooms"
