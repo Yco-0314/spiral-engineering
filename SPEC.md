@@ -70,8 +70,8 @@ Canonical table — deepseek-chat under test, deepseek-reasoner judging, `EVAL_N
 vote, whole run ≪ $1:
 
 ```
-debugging +100 · tdd +100 · grilling +75 · verification-before-completion +50
-l0-ponytail +43 · review +25 · complexity-router +13        Σ +406%, 7/7 pass the gate
+review +100 · debugging +100 · grilling +75 · tdd +75 · verification +50
+l0-ponytail +43 · complexity-router +13                     Σ +456%, 7/7 pass the gate
 ```
 
 Findings the instruments produced (none available to a pattern catalog):
@@ -88,6 +88,9 @@ Findings the instruments produced (none available to a pattern catalog):
    `difficultyBasis`.
 4. **Honest error paths.** A ~1-minute transport window killed 40/40 calls of one set; the
    ledger recorded `gate:ERROR`, the re-run replaced it. Nulls are recorded, never invented.
+5. **Asserts drift behind skill evolution.** The review skill shipped a newer output contract;
+   the eval's asserts still demanded the older format and punished compliance — a Δ+100 skill
+   read Δ+25 until transcript-feedback caught it. Evals need the same drift discipline as code.
 
 ## 4. Laws (statement → root → instrument → how it dies)
 

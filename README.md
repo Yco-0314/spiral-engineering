@@ -46,18 +46,20 @@ reference implementation ([strata](https://github.com/Yco-0314/strata), 2026-07-
 node bin/spiral-pitch.mjs --changes examples/strata/changes.jsonl --evals examples/strata/evals.jsonl
 ```
 
-You should see: 19 verified self-changes over 9 days, grounding 89% external, and the
+You should see: 22 verified self-changes over 10 days, grounding 86% external, and the
 canonical measured table — 7/7 skills moving the number under an N=5 majority vote with a
-stronger judge (Σ +406%, whole run under a dollar):
+stronger judge (Σ +456%, whole run under a dollar):
 
 ```
-debugging +100 · tdd +100 · grilling +75 · verification-before-completion +50
-l0-ponytail +43 · review +25 · complexity-router +13
+review +100 · debugging +100 · grilling +75 · tdd +75
+verification-before-completion +50 · l0-ponytail +43 · complexity-router +13
 ```
 
-The same run also demonstrated why the discipline exists: with the model judging itself, the
-best skill on that table read **Δ0** and was flagged for deletion. The instruments caught the
-lie; a pattern catalog never would have.
+The same ledger demonstrates why the discipline exists — three eval pathologies caught by
+instruments, none visible to a pattern catalog: with the model judging itself, the best skill
+read **Δ0** and was flagged for deletion (judge-confound); 4 of 7 hand-guessed difficulty tags
+were overturned by measurement; and review's asserts drifted behind the skill's own evolved
+output contract, reading Δ+25 for a Δ+100 skill until transcript-feedback caught it.
 
 ## Adopt it on your repo
 

@@ -43,6 +43,6 @@ jobs:
 
       - name: Instruments replay the exhibit
         run: |
-          node bin/spiral-pitch.mjs --changes examples/strata/changes.jsonl --evals examples/strata/evals.jsonl | grep -q "Σ +406%" && echo "canonical table reproduced"
+          node bin/spiral-pitch.mjs --changes examples/strata/changes.jsonl --evals examples/strata/evals.jsonl | grep -q "Σ +456%" && echo "canonical table reproduced"
           ! node bin/dark-room.mjs --evals examples/strata/evals.jsonl | grep -q "MEASURED DARK ROOM"
           echo "no false dark rooms"
