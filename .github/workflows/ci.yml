@@ -19,6 +19,7 @@ jobs:
           node bin/spiral-pitch.mjs --self-test
           node bin/dark-room.mjs --self-test
           node bin/derive-difficulty.mjs --self-test
+          node bin/design-tunnel.mjs --self-test
 
       - name: Schema is valid JSON
         run: node -e "JSON.parse(require('fs').readFileSync('schema/ledger.schema.json','utf8'))"
@@ -29,7 +30,7 @@ jobs:
           import { readFileSync } from "node:fs";
           const req = { change: ["ts","id","class","evidence","grounding"], eval: ["ts","set","model","judgeModel","n","cases","delta","gate"], "measure-run": ["ts","rows"] };
           let n = 0;
-          for (const f of ["examples/strata/changes.jsonl","examples/strata/evals.jsonl"]) {
+          for (const f of ["changes.jsonl","examples/strata/changes.jsonl","examples/strata/evals.jsonl"]) {
             for (const line of readFileSync(f,"utf8").trim().split("\n")) {
               const r = JSON.parse(line); n++;
               const need = req[r.kind];

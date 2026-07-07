@@ -1,0 +1,9 @@
+{
+  "note": "The same four future requirements thrown at both skeletons. Hypothesis under test is the TRADEOFF STRUCTURE, not a winner: isolation should pay on cross-cutting change (f4), and cost overhead on simple additions (f1). If one skeleton wins everywhere, publish that.",
+  "features": [
+    { "id": "f1-get-by-email", "task": "Add the ability to fetch a user by their email address, exposed as route 'GET /users/by-email/:email'." },
+    { "id": "f2-read-cache", "task": "Add an in-memory cache for user reads by id with a 60-second TTL. Cache invalidation on delete." },
+    { "id": "f3-soft-delete", "task": "Replace hard deletion with soft deletion: add a deleted_at timestamp instead of removing rows, and make every read exclude soft-deleted users." },
+    { "id": "f4-swap-db-client", "task": "The db client library is being replaced: db.query(sql, params) no longer exists; the new API is db.execute({ sql, params }) which returns { rows }. Migrate the codebase to the new API." }
+  ]
+}

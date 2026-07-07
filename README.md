@@ -24,7 +24,18 @@ node bin/dark-room.mjs --sets sets/ --evals evals.jsonl
                                      # can your eval even reveal anything?
 node bin/derive-difficulty.mjs --sets sets/ --evals evals.jsonl --model <id>
                                      # difficulty tags from measurement, not opinion
+node bin/design-tunnel.mjs --fixture examples/tunnel --model <id>
+                                     # the counterfactual wind tunnel (v0): same future
+                                     # requirements vs competing skeletons, change-cost measured
 ```
+
+The tunnel's first live run is in [`examples/tunnel/results.jsonl`](examples/tunnel/results.jsonl)
+— and it refused to confirm the prejudice: the layered skeleton won on exactly one of four
+future requirements (soft-delete, where SQL isolation pays), lost on read-cache by 2.7× lines
+(the abstraction invited decorator ceremony), and tied the "infra swap" everyone predicts
+isolation wins — because the direct skeleton's data access was already contained. The tradeoff
+has a *condition*, not a winner. v0 evidence grade: unexecuted diffs (spread + landing site);
+v1 = apply + test.
 
 ## Try it now, on real data
 

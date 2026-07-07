@@ -1,0 +1,8 @@
+{"kind":"tunnel","ts":"2026-07-07T02:02:16.415Z","model":"deepseek-chat","skeleton":"skeleton-direct","feature":"f1-get-by-email","reps":3,"files":2,"added":7,"removed":1,"unparsed":0}
+{"kind":"tunnel","ts":"2026-07-07T02:02:25.581Z","model":"deepseek-chat","skeleton":"skeleton-direct","feature":"f2-read-cache","reps":3,"files":1,"added":16,"removed":1,"unparsed":0}
+{"kind":"tunnel","ts":"2026-07-07T02:02:35.938Z","model":"deepseek-chat","skeleton":"skeleton-direct","feature":"f3-soft-delete","reps":3,"files":2,"added":5,"removed":5,"unparsed":0}
+{"kind":"tunnel","ts":"2026-07-07T02:02:46.449Z","model":"deepseek-chat","skeleton":"skeleton-direct","feature":"f4-swap-db-client","reps":3,"files":2,"added":9,"removed":9,"unparsed":0}
+{"kind":"tunnel","ts":"2026-07-07T02:02:57.998Z","model":"deepseek-chat","skeleton":"skeleton-layered","feature":"f1-get-by-email","reps":3,"files":3,"added":7,"removed":0,"unparsed":0}
+{"kind":"tunnel","ts":"2026-07-07T02:03:12.590Z","model":"deepseek-chat","skeleton":"skeleton-layered","feature":"f2-read-cache","reps":3,"files":2,"added":44,"removed":2,"unparsed":0}
+{"kind":"tunnel","ts":"2026-07-07T02:03:22.562Z","model":"deepseek-chat","skeleton":"skeleton-layered","feature":"f3-soft-delete","reps":3,"files":1,"added":5,"removed":5,"unparsed":0}
+{"kind":"tunnel","ts":"2026-07-07T02:03:33.400Z","model":"deepseek-chat","skeleton":"skeleton-layered","feature":"f4-swap-db-client","reps":3,"files":2,"added":9,"removed":9,"unparsed":0}
