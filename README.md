@@ -29,13 +29,19 @@ node bin/design-tunnel.mjs --fixture examples/tunnel --model <id>
                                      # requirements vs competing skeletons, change-cost measured
 ```
 
-The tunnel's first live run is in [`examples/tunnel/results.jsonl`](examples/tunnel/results.jsonl)
-— and it refused to confirm the prejudice: the layered skeleton won on exactly one of four
-future requirements (soft-delete, where SQL isolation pays), lost on read-cache by 2.7× lines
-(the abstraction invited decorator ceremony), and tied the "infra swap" everyone predicts
-isolation wins — because the direct skeleton's data access was already contained. The tradeoff
-has a *condition*, not a winner. v0 evidence grade: unexecuted diffs (spread + landing site);
-v1 = apply + test.
+Both live runs are in [`examples/tunnel/results.jsonl`](examples/tunnel/results.jsonl):
+
+- **v0 (unexecuted diffs)** refused to confirm the prejudice: layered won exactly one of four
+  future requirements (soft-delete, where SQL isolation pays), lost read-cache by 2.7× lines
+  (the abstraction invited decorator ceremony), and tied the infra swap everyone predicts
+  isolation wins. The tradeoff has a *condition*, not a winner.
+- **v1 (`--verify`: apply → tsc → behavioral probe)** then demolished v0's evidence grade,
+  which is exactly what it is for: of 24 parsed diffs, only **7 applied, 5 compiled, 4 passed
+  the behavioral probe**. Most of what v0 measured could not even be applied. The one
+  cross-skeleton comparison that survived verification (infra swap) remains a tie; one rep
+  compiled but failed the probe — *compiles ≠ actually caches*. Attrition attribution is
+  honest too: the one-shot-diff vehicle, not model capability, is the dominant loss source —
+  v2 is agentic file-editing instead of emitted diffs.
 
 ## Try it now, on real data
 

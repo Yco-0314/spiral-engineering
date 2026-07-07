@@ -46,6 +46,7 @@ Shipped in this repository (zero dependencies, every one `--self-test`ed):
 | Measured layer | What did automated eval actually record (latest per set@model)? | `bin/spiral-pitch.mjs --evals` |
 | Dark-room | Can this eval even reveal value, or is it all-easy? | `bin/dark-room.mjs` |
 | Difficulty derivation | Tags from measurement, not opinion (difficulty is model-relative) | `bin/derive-difficulty.mjs` |
+| Design wind tunnel | Which candidate design is cheaper to change, measured not argued | `bin/design-tunnel.mjs` (`--verify` = apply + tsc + behavioral probe) |
 
 Specified here, implemented by any conforming harness (the reference implementation has all
 of them):
@@ -147,8 +148,11 @@ the cautionary tale: naming a disease is not a blood test.
    monotonically decreasing: the one number you cannot game by adding more skills.
 2. **ADR outcome calibration** — predicted outcomes on architecture decisions + scheduled
    revisits graded against repo evidence: architecture judgment gets a Brier score.
-3. **design-tunnel** — agents implement the same next-N features against competing skeletons;
-   change-cost becomes a measurement (~$10² per decision vs an architect-week).
+3. **design-tunnel** — ~~v0 (diff proxy)~~ ~~v1 (verified: apply + tsc + behavioral probe)~~
+   shipped; v1's headline is the attrition funnel itself (24 parsed → 7 applied → 5 compiled →
+   4 probe-passed): unexecuted-diff proxies overstate evidence, and one rep that compiled but
+   failed its probe shows why behavioral verification is the floor. v2 = agentic file-editing
+   (the one-shot-diff vehicle, not the model, dominates the attrition).
 4. **Replication protocol** — the falsification experiment of §1, run on repos that aren't
    the reference implementation.
 
