@@ -139,15 +139,22 @@ the cautionary tale: naming a disease is not a blood test.
   right thing.
 - The architect's residue stays human for now: authoring the distribution of plausible
   futures, risk appetite, organizational negotiation, accountability. The counterfactual
-  wind tunnel (roadmap) attacks the technical core — candidate selection under change — not
+  wind tunnel (design-tunnel, shipped) attacks the technical core — candidate selection under change — not
   these.
 
 ## 8. Roadmap (each item ships only through the gate)
 
-1. **MDL total description length** — intervention tokens + residual failure entropy,
-   monotonically decreasing: the one number you cannot game by adding more skills.
-2. **ADR outcome calibration** — predicted outcomes on architecture decisions + scheduled
-   revisits graded against repo evidence: architecture judgment gets a Brier score.
+1. **MDL total description length** — ~~roadmap~~ shipped in the reference implementation
+   (strata `scripts/mdl.mjs`): a two-term Pareto gauge — L1 = measured-skill corpus chars,
+   L2 = residual with-skill failures — with verdicts IMPROVED/FLAT/TRADE/REGRESSED,
+   deliberately not a scalar (a chars-to-failures exchange rate would be an invented
+   constant). Baseline snapshot (deepseek-chat): 25,457 chars / 6 residual fails per 34
+   graded. Deletion is now visible progress.
+2. **ADR outcome calibration** — ~~roadmap~~ shipped in the reference implementation
+   (strata `scripts/adr-calibration.mjs`): fenced prediction blocks in ADRs, a due-for-grading
+   report, hit rate over graded, exit 2 on overdue. ADR 0001 carries the first 3 falsifiable
+   predictions (due 2026-10-06). The calibration curve starts empty by design — retroactive
+   predictions are fake.
 3. **design-tunnel** — ~~v0 (diff proxy)~~ ~~v1 (verified: apply + tsc + behavioral probe)~~
    shipped; v1's headline is the attrition funnel itself (24 parsed → 7 applied → 5 compiled →
    4 probe-passed): unexecuted-diff proxies overstate evidence, and one rep that compiled but

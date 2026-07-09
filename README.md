@@ -1,21 +1,78 @@
 # Spiral Engineering · 螺旋工程
 
-> A loop returns to where it started. A spiral doesn't — and can prove it.
+> A loop returns to where it started. A spiral doesn't — **and can prove it.**
 > Show me your pitch curve.
 
-**Loop engineering** makes one agent loop reliable. **Spiral engineering** asks whether the
-system *running* your loops — the skills, prompts, gates, evals, judges — is verifiably
-improving, and refuses to take your word for it. Every self-change carries evidence; every
-claim ships with the condition under which it dies.
+Prompt engineering shaped one call. Context engineering shaped one session. Harness and loop
+engineering made one task's cycle reliable. **Spiral engineering asks the second-order question
+none of them ask: is the system *running* your loops — the skills, prompts, gates, evals,
+judges — verifiably improving?** Not "it feels smarter". Measured, on an append-only ledger,
+receipts published — including the ugly ones.
 
-This repository is the discipline, not a framework:
+**A self-improvement claim without a measurement is a loop with marketing.**
 
-- **[SPEC.md](SPEC.md)** — definition, the falsifiability contract, six laws (each with a
-  death condition), anti-patterns, boundaries, roadmap.
+## Why care
+
+- **Verification just got cheap.** One methodologically clean, full-population measurement of
+  a skill library — N=5 majority vote, judge stronger than the judged — now costs **under a
+  dollar**. "We couldn't afford to verify" retired in 2026.
+- **Your eval is probably lying to you.** The reference ledger caught three eval pathologies
+  in ten days (below). Each one had already flipped a real decision; none is visible to a
+  pattern catalog.
+- **Every claim here states how it dies.** The spec's six laws each carry a falsification
+  condition — including the discipline itself: if measured spirals don't outperform unmeasured
+  loop-pattern adoption on realized outcomes, this was a name, not a discipline, and that
+  result gets published here too (SPEC §1).
+
+## The receipts — a real ledger, not a demo
+
+[strata](https://github.com/Yco-0314/strata), reference implementation #1: **22 verified
+self-changes over 10 days, grounding 86% external**, and this canonical table (deepseek-chat
+under test, deepseek-reasoner judging, N=5, whole run under a dollar):
+
+```
+review +100 · debugging +100 · grilling +75 · tdd +75
+verification-before-completion +50 · l0-ponytail +43 · complexity-router +13
+                                        Σ +456% · 7/7 skills move the number
+```
+
+Run it yourself — the [`examples/strata/`](examples/strata/) ledgers are the real, unedited
+exhibit:
+
+```bash
+node bin/spiral-pitch.mjs --changes examples/strata/changes.jsonl --evals examples/strata/evals.jsonl
+```
+
+Three eval pathologies the instruments caught — the reason the discipline exists:
+
+1. **Judge-confound.** With the model judging itself, the *best* skill read Δ0 and was headed
+   for deletion. Re-judged by a stronger model: **Δ0 → +100%**. Correcting the eval *was* the
+   progress.
+2. **Guessed difficulty.** 4 of 7 hand-assigned difficulty tags were overturned by measured
+   baselines. Tags are now derived from data, with a traceable basis.
+3. **Assert drift.** review's eval asserts fell behind the skill's own evolved output
+   contract — reading +25 for a +100 skill until transcript-feedback caught it.
+
+And the counterfactual wind tunnel ([design-tunnel](bin/design-tunnel.mjs), both live runs in
+[`examples/tunnel/results.jsonl`](examples/tunnel/results.jsonl)) produced a finding about
+*measurement itself*: of 24 architecture-comparison diffs the unexecuted-diff proxy (v0) had
+happily scored, v1's verification pipeline (apply → compile → behavioral probe) passed
+**7 → 5 → 4 (17%)**. Most of what the proxy "measured" could never have been applied; one rep
+compiled but didn't actually cache. **Behavioral verification is the floor, not the ceremony.**
+(v0's own result was already anti-hype: the layered skeleton won exactly one of four future
+requirements — the tradeoff has a *condition*, not a winner.)
+
+## What's in the box
+
+- **[SPEC.md](SPEC.md)** — the falsifiability contract: pitch (verified self-changes,
+  classified SHIP/GATE/NULL), null-ratio (a spiral that never rejects anything is not
+  measuring), grounding ratio (a closed loop cannot out-learn its external signal — the Data
+  Processing Inequality, so self-certification is thermodynamically empty). Six laws, each
+  with a death condition. Anti-patterns, boundaries, roadmap.
 - **[schema/ledger.schema.json](schema/ledger.schema.json)** — the interchange format: two
   append-only JSONL ledgers (`changes` = verified self-changes, `evals` = the measurements
-  that back them). The format is the project; tools are replaceable.
-- **[bin/](bin/)** — three zero-dependency instruments, each `--self-test`ed:
+  that back them). **The format is the project; the tools are replaceable.**
+- **[bin/](bin/)** — four zero-dependency instruments, each `--self-test`ed:
 
 ```bash
 node bin/spiral-pitch.mjs --changes changes.jsonl --evals evals.jsonl
@@ -24,73 +81,46 @@ node bin/dark-room.mjs --sets sets/ --evals evals.jsonl
                                      # can your eval even reveal anything?
 node bin/derive-difficulty.mjs --sets sets/ --evals evals.jsonl --model <id>
                                      # difficulty tags from measurement, not opinion
-node bin/design-tunnel.mjs --fixture examples/tunnel --model <id>
-                                     # the counterfactual wind tunnel (v0): same future
-                                     # requirements vs competing skeletons, change-cost measured
+node bin/design-tunnel.mjs --fixture examples/tunnel --model <id> [--verify]
+                                     # same future requirements vs competing skeletons:
+                                     # change-cost measured, diffs behaviorally verified
 ```
 
-Both live runs are in [`examples/tunnel/results.jsonl`](examples/tunnel/results.jsonl):
+This repo keeps its own ledger ([`changes.jsonl`](changes.jsonl)) — the discipline applied to
+itself, from commit one.
 
-- **v0 (unexecuted diffs)** refused to confirm the prejudice: layered won exactly one of four
-  future requirements (soft-delete, where SQL isolation pays), lost read-cache by 2.7× lines
-  (the abstraction invited decorator ceremony), and tied the infra swap everyone predicts
-  isolation wins. The tradeoff has a *condition*, not a winner.
-- **v1 (`--verify`: apply → tsc → behavioral probe)** then demolished v0's evidence grade,
-  which is exactly what it is for: of 24 parsed diffs, only **7 applied, 5 compiled, 4 passed
-  the behavioral probe**. Most of what v0 measured could not even be applied. The one
-  cross-skeleton comparison that survived verification (infra swap) remains a tie; one rep
-  compiled but failed the probe — *compiles ≠ actually caches*. Attrition attribution is
-  honest too: the one-shot-diff vehicle, not model capability, is the dominant loss source —
-  v2 is agentic file-editing instead of emitted diffs.
+## Adopt it on your repo — an afternoon, not a migration
 
-## Try it now, on real data
-
-The [`examples/strata/`](examples/strata/) ledgers are the real, unedited exhibit from the
-reference implementation ([strata](https://github.com/Yco-0314/strata), 2026-07-06):
-
-```bash
-node bin/spiral-pitch.mjs --changes examples/strata/changes.jsonl --evals examples/strata/evals.jsonl
-```
-
-You should see: 22 verified self-changes over 10 days, grounding 86% external, and the
-canonical measured table — 7/7 skills moving the number under an N=5 majority vote with a
-stronger judge (Σ +456%, whole run under a dollar):
-
-```
-review +100 · debugging +100 · grilling +75 · tdd +75
-verification-before-completion +50 · l0-ponytail +43 · complexity-router +13
-```
-
-The same ledger demonstrates why the discipline exists — three eval pathologies caught by
-instruments, none visible to a pattern catalog: with the model judging itself, the best skill
-read **Δ0** and was flagged for deletion (judge-confound); 4 of 7 hand-guessed difficulty tags
-were overturned by measurement; and review's asserts drifted behind the skill's own evolved
-output contract, reading Δ+25 for a Δ+100 skill until transcript-feedback caught it.
-
-## Adopt it on your repo
-
-1. Start the two ledgers (any adapter works — [`adapters/strata-backlog.mjs`](adapters/strata-backlog.mjs)
-   is ~30 lines; write one for your format).
+1. Start the two ledgers. Any adapter works —
+   [`adapters/strata-backlog.mjs`](adapters/strata-backlog.mjs) is ~30 lines; write one for
+   your format.
 2. Make your eval runner conform (SPEC §9): always append, never merge across models, judge
-   stronger than judged, real usage or `null`.
+   stronger than judged, real usage or `null` — never an estimate presented as a measurement.
 3. Run the instruments. **Publish the numbers — including the ugly ones.**
-4. Open a PR linking your pitch curve. Replications, including failed ones, are the community
-   mechanic here — not stars.
+4. Open a PR linking your pitch curve. **Replications — including failed ones — are the
+   community mechanic here. Not stars.**
 
 ## 中文速览
 
-从 prompt → context → harness → loop,每一代工程都在往上一层。螺旋工程是下一层的**二阶**问题:
-跑循环的系统本身(技能、门、eval、判官)是否在**可验证地**变强。核心是一份可证伪契约——自称螺旋,
-就必须公布**螺距**(单位时间被验证的自改进,按证据分类 SHIP/GATE/NULL)、**null 比率**(从不拒绝
-任何东西的系统没在度量)、**接地率**(数据处理不等式:封闭循环学不到外部信号之外的东西)。机制无一
-新颖(PDCA、双环学习、DGM、fitness functions……),可辩护的贡献很窄:**诚实度量 + 机械门 + 拒绝
-自证**,外加让任何仓库都能接入的账本交换格式。`examples/` 里是参考实现的真实账本,可直接复跑。
+从 prompt → context → harness → loop，每一代工程都在往上一层。**螺旋工程是二阶问题：跑循环的
+系统本身（技能、门、eval、判官）是否在可验证地变强。** 没有度量的自我改进声明，只是带营销的循环。
+
+- **可证伪契约**：自称螺旋，就必须公布**螺距**（单位时间被验证的自改进，按证据分类
+  SHIP/GATE/NULL）、**null 比率**（从不拒绝任何东西的系统没在度量）、**接地率**（数据处理不等式：
+  封闭循环学不到外部信号之外的东西，自证在热力学上是空的）。六条定律，每条自带死亡条件。
+- **真账本**：参考实现 10 天 22 条已验证自改进，7/7 技能 Δ>0（Σ +456%），整轮度量不到 1 美元；
+  三类 eval 病理全被仪器抓出——模型自判自评时，最强的技能读作 Δ0，差点被删。
+- **窄贡献，诚实说**：机制无一新颖（PDCA、双环学习、DGM、fitness functions……），可辩护的只有
+  **诚实度量 + 机械门 + 拒绝自证**，外加一份任何仓库都能接入的账本交换格式。
+
+`examples/` 里是真实账本，可直接复跑。把数字发表出来——包括难看的那些，这就是全部纪律。
 
 ## Status
 
-v0.1 draft. Reference implementation: [strata](https://github.com/Yco-0314/strata). The
-discipline's own falsification condition is stated in SPEC §1 — if measured spirals don't
-outperform unmeasured loop-pattern adoption on realized outcomes, this is a name, not a
-discipline, and that result will be published here too.
+v0.1 draft. Reference implementation: [strata](https://github.com/Yco-0314/strata). Roadmap
+items 1–3 (MDL Pareto gauge, ADR outcome calibration, design-tunnel) have shipped through the
+gate; open: agentic design-tunnel v2 and the replication protocol — the falsification
+experiment of SPEC §1, run on repos that aren't the reference implementation. If that
+experiment kills the discipline, the obituary will be published here.
 
 MIT.
