@@ -100,6 +100,29 @@ itself, from commit one.
 4. Open a PR linking your pitch curve. **Replications — including failed ones — are the
    community mechanic here. Not stars.**
 
+## Run it from Claude Code or Codex
+
+The discipline splits into two layers on purpose. The **instruments** (zero-dep node + JSONL)
+are host-neutral — any agent with a shell runs them identically. The **discipline layer**
+(making the agent actually follow the loop) is where hosts differ:
+
+- **Claude Code** — full mechanical enforcement via the reference implementation: install
+  [strata](https://github.com/Yco-0314/strata) as a namespaced plugin
+  (`claude plugin marketplace add <repo> && claude plugin install strata@strata`), then say
+  "run the improve loop". Skills drive measure→gate→record; hooks enforce at edit time
+  (skill validation, a same-error circuit breaker). On a repo without strata, wrap the
+  `bin/` commands in a skill of your own.
+- **Codex** — instruments unchanged, from the shell. Discipline goes in `.agents/AGENTS.md`
+  (strata ships `scripts/install.sh --host codex --apply`, which installs its skills to
+  `~/.agents/skills` and prints the AGENTS.md line). Codex has no hook system, so the
+  mechanical gates shift to CI — the layer both hosts share anyway.
+- **Any model endpoint** — nothing here is vendor-bound: the exhibit itself was measured on
+  DeepSeek through an Anthropic-compatible endpoint (`ANTHROPIC_BASE_URL`), judge stronger
+  than judged.
+
+Honest asymmetry: edit-time enforcement exists only where the host has hooks. Where it
+doesn't, the ledger still catches drift — one gate later, in CI, instead of in-session.
+
 ## 中文速览
 
 从 prompt → context → harness → loop，每一代工程都在往上一层。**螺旋工程是二阶问题：跑循环的
@@ -113,7 +136,10 @@ itself, from commit one.
 - **窄贡献，诚实说**：机制无一新颖（PDCA、双环学习、DGM、fitness functions……），可辩护的只有
   **诚实度量 + 机械门 + 拒绝自证**，外加一份任何仓库都能接入的账本交换格式。
 
-`examples/` 里是真实账本，可直接复跑。把数字发表出来——包括难看的那些，这就是全部纪律。
+**双宿主**：仪器层零依赖、宿主无关，Claude Code 和 Codex 的 shell 里跑法一样；纪律层在
+Claude Code 走 strata 插件（skills + hooks 机械强制），Codex 走 `.agents/AGENTS.md`（无 hooks，
+机械门移到 CI）。`examples/` 里是真实账本，可直接复跑。把数字发表出来——包括难看的那些，
+这就是全部纪律。
 
 ## Status
 
